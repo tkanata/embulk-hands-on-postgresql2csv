@@ -31,7 +31,7 @@ type TeaMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *string
+	id            *int
 	name          *string
 	color         *string
 	clearedFields map[string]struct{}
@@ -60,7 +60,7 @@ func newTeaMutation(c config, op Op, opts ...teaOption) *TeaMutation {
 }
 
 // withTeaID sets the ID field of the mutation.
-func withTeaID(id string) teaOption {
+func withTeaID(id int) teaOption {
 	return func(m *TeaMutation) {
 		var (
 			err   error
@@ -110,15 +110,9 @@ func (m TeaMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Tea entities.
-func (m *TeaMutation) SetID(id string) {
-	m.id = &id
-}
-
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TeaMutation) ID() (id string, exists bool) {
+func (m *TeaMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -129,12 +123,12 @@ func (m *TeaMutation) ID() (id string, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TeaMutation) IDs(ctx context.Context) ([]string, error) {
+func (m *TeaMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []string{id}, nil
+			return []int{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):

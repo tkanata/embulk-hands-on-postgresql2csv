@@ -72,7 +72,7 @@ func (tu *TeaUpdate) ExecX(ctx context.Context) {
 }
 
 func (tu *TeaUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(tea.Table, tea.Columns, sqlgraph.NewFieldSpec(tea.FieldID, field.TypeString))
+	_spec := sqlgraph.NewUpdateSpec(tea.Table, tea.Columns, sqlgraph.NewFieldSpec(tea.FieldID, field.TypeInt))
 	if ps := tu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -164,7 +164,7 @@ func (tuo *TeaUpdateOne) ExecX(ctx context.Context) {
 }
 
 func (tuo *TeaUpdateOne) sqlSave(ctx context.Context) (_node *Tea, err error) {
-	_spec := sqlgraph.NewUpdateSpec(tea.Table, tea.Columns, sqlgraph.NewFieldSpec(tea.FieldID, field.TypeString))
+	_spec := sqlgraph.NewUpdateSpec(tea.Table, tea.Columns, sqlgraph.NewFieldSpec(tea.FieldID, field.TypeInt))
 	id, ok := tuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Tea.id" for update`)}

@@ -2,19 +2,8 @@
 
 package ent
 
-import (
-	"github.com/tkanata/embulk-hands-on-postgresql2csv/ent/schema"
-	"github.com/tkanata/embulk-hands-on-postgresql2csv/ent/tea"
-)
-
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	teaFields := schema.Tea{}.Fields()
-	_ = teaFields
-	// teaDescID is the schema descriptor for id field.
-	teaDescID := teaFields[0].Descriptor()
-	// tea.IDValidator is a validator for the "id" field. It is called by the builders before save.
-	tea.IDValidator = teaDescID.Validators[0].(func(string) error)
 }

@@ -8,58 +8,48 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id string) predicate.Tea {
+func ID(id int) predicate.Tea {
 	return predicate.Tea(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id string) predicate.Tea {
+func IDEQ(id int) predicate.Tea {
 	return predicate.Tea(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id string) predicate.Tea {
+func IDNEQ(id int) predicate.Tea {
 	return predicate.Tea(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...string) predicate.Tea {
+func IDIn(ids ...int) predicate.Tea {
 	return predicate.Tea(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...string) predicate.Tea {
+func IDNotIn(ids ...int) predicate.Tea {
 	return predicate.Tea(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id string) predicate.Tea {
+func IDGT(id int) predicate.Tea {
 	return predicate.Tea(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id string) predicate.Tea {
+func IDGTE(id int) predicate.Tea {
 	return predicate.Tea(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id string) predicate.Tea {
+func IDLT(id int) predicate.Tea {
 	return predicate.Tea(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id string) predicate.Tea {
+func IDLTE(id int) predicate.Tea {
 	return predicate.Tea(sql.FieldLTE(FieldID, id))
-}
-
-// IDEqualFold applies the EqualFold predicate on the ID field.
-func IDEqualFold(id string) predicate.Tea {
-	return predicate.Tea(sql.FieldEqualFold(FieldID, id))
-}
-
-// IDContainsFold applies the ContainsFold predicate on the ID field.
-func IDContainsFold(id string) predicate.Tea {
-	return predicate.Tea(sql.FieldContainsFold(FieldID, id))
 }
 
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
@@ -204,32 +194,15 @@ func ColorContainsFold(v string) predicate.Tea {
 
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Tea) predicate.Tea {
-	return predicate.Tea(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for _, p := range predicates {
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.Tea(sql.AndPredicates(predicates...))
 }
 
 // Or groups predicates with the OR operator between them.
 func Or(predicates ...predicate.Tea) predicate.Tea {
-	return predicate.Tea(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for i, p := range predicates {
-			if i > 0 {
-				s1.Or()
-			}
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.Tea(sql.OrPredicates(predicates...))
 }
 
 // Not applies the not operator on the given predicate.
 func Not(p predicate.Tea) predicate.Tea {
-	return predicate.Tea(func(s *sql.Selector) {
-		p(s.Not())
-	})
+	return predicate.Tea(sql.NotPredicates(p))
 }

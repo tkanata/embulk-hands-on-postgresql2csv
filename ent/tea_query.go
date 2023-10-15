@@ -81,8 +81,8 @@ func (tq *TeaQuery) FirstX(ctx context.Context) *Tea {
 
 // FirstID returns the first Tea ID from the query.
 // Returns a *NotFoundError when no Tea ID was found.
-func (tq *TeaQuery) FirstID(ctx context.Context) (id string, err error) {
-	var ids []string
+func (tq *TeaQuery) FirstID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = tq.Limit(1).IDs(setContextOp(ctx, tq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -94,7 +94,7 @@ func (tq *TeaQuery) FirstID(ctx context.Context) (id string, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tq *TeaQuery) FirstIDX(ctx context.Context) string {
+func (tq *TeaQuery) FirstIDX(ctx context.Context) int {
 	id, err := tq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -132,8 +132,8 @@ func (tq *TeaQuery) OnlyX(ctx context.Context) *Tea {
 // OnlyID is like Only, but returns the only Tea ID in the query.
 // Returns a *NotSingularError when more than one Tea ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tq *TeaQuery) OnlyID(ctx context.Context) (id string, err error) {
-	var ids []string
+func (tq *TeaQuery) OnlyID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = tq.Limit(2).IDs(setContextOp(ctx, tq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -149,7 +149,7 @@ func (tq *TeaQuery) OnlyID(ctx context.Context) (id string, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tq *TeaQuery) OnlyIDX(ctx context.Context) string {
+func (tq *TeaQuery) OnlyIDX(ctx context.Context) int {
 	id, err := tq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -177,7 +177,7 @@ func (tq *TeaQuery) AllX(ctx context.Context) []*Tea {
 }
 
 // IDs executes the query and returns a list of Tea IDs.
-func (tq *TeaQuery) IDs(ctx context.Context) (ids []string, err error) {
+func (tq *TeaQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if tq.ctx.Unique == nil && tq.path != nil {
 		tq.Unique(true)
 	}
@@ -189,7 +189,7 @@ func (tq *TeaQuery) IDs(ctx context.Context) (ids []string, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tq *TeaQuery) IDsX(ctx context.Context) []string {
+func (tq *TeaQuery) IDsX(ctx context.Context) []int {
 	ids, err := tq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -364,7 +364,7 @@ func (tq *TeaQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (tq *TeaQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(tea.Table, tea.Columns, sqlgraph.NewFieldSpec(tea.FieldID, field.TypeString))
+	_spec := sqlgraph.NewQuerySpec(tea.Table, tea.Columns, sqlgraph.NewFieldSpec(tea.FieldID, field.TypeInt))
 	_spec.From = tq.sql
 	if unique := tq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
