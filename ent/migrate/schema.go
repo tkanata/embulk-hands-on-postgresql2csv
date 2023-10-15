@@ -10,7 +10,7 @@ import (
 var (
 	// TeasColumns holds the columns for the "teas" table.
 	TeasColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"postgres": "varchar(100)"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString, SchemaType: map[string]string{"postgres": "varchar(100)"}},
 		{Name: "color", Type: field.TypeString, SchemaType: map[string]string{"postgres": "varchar(100)"}},
 	}

@@ -15,7 +15,7 @@ import (
 type Tea struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID string `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Color holds the value of the "color" field.
@@ -28,7 +28,9 @@ func (*Tea) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case tea.FieldID, tea.FieldName, tea.FieldColor:
+		case tea.FieldID:
+			values[i] = new(sql.NullInt64)
+		case tea.FieldName, tea.FieldColor:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -46,11 +48,11 @@ func (t *Tea) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case tea.FieldID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field id", values[i])
-			} else if value.Valid {
-				t.ID = value.String
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
 			}
+			t.ID = int(value.Int64)
 		case tea.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])

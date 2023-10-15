@@ -14,10 +14,6 @@ type Tea struct {
 // Fields of the Tea.
 func (Tea) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("id").NotEmpty().Immutable().
-			SchemaType(map[string]string{
-				dialect.Postgres: "varchar(100)",
-			}),
 		field.String("name").
 			SchemaType(map[string]string{
 				dialect.Postgres: "varchar(100)",

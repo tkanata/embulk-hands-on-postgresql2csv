@@ -31,12 +31,6 @@ func (tc *TeaCreate) SetColor(s string) *TeaCreate {
 	return tc
 }
 
-// SetID sets the "id" field.
-func (tc *TeaCreate) SetID(s string) *TeaCreate {
-	tc.mutation.SetID(s)
-	return tc
-}
-
 // Mutation returns the TeaMutation object of the builder.
 func (tc *TeaCreate) Mutation() *TeaMutation {
 	return tc.mutation
@@ -77,11 +71,6 @@ func (tc *TeaCreate) check() error {
 	if _, ok := tc.mutation.Color(); !ok {
 		return &ValidationError{Name: "color", err: errors.New(`ent: missing required field "Tea.color"`)}
 	}
-	if v, ok := tc.mutation.ID(); ok {
-		if err := tea.IDValidator(v); err != nil {
-			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "Tea.id": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -96,13 +85,8 @@ func (tc *TeaCreate) sqlSave(ctx context.Context) (*Tea, error) {
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != nil {
-		if id, ok := _spec.ID.Value.(string); ok {
-			_node.ID = id
-		} else {
-			return nil, fmt.Errorf("unexpected Tea.ID type: %T", _spec.ID.Value)
-		}
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = int(id)
 	tc.mutation.id = &_node.ID
 	tc.mutation.done = true
 	return _node, nil
@@ -111,12 +95,8 @@ func (tc *TeaCreate) sqlSave(ctx context.Context) (*Tea, error) {
 func (tc *TeaCreate) createSpec() (*Tea, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Tea{config: tc.config}
-		_spec = sqlgraph.NewCreateSpec(tea.Table, sqlgraph.NewFieldSpec(tea.FieldID, field.TypeString))
+		_spec = sqlgraph.NewCreateSpec(tea.Table, sqlgraph.NewFieldSpec(tea.FieldID, field.TypeInt))
 	)
-	if id, ok := tc.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = id
-	}
 	if value, ok := tc.mutation.Name(); ok {
 		_spec.SetField(tea.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -131,11 +111,15 @@ func (tc *TeaCreate) createSpec() (*Tea, *sqlgraph.CreateSpec) {
 // TeaCreateBulk is the builder for creating many Tea entities in bulk.
 type TeaCreateBulk struct {
 	config
+	err      error
 	builders []*TeaCreate
 }
 
 // Save creates the Tea entities in the database.
 func (tcb *TeaCreateBulk) Save(ctx context.Context) ([]*Tea, error) {
+	if tcb.err != nil {
+		return nil, tcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(tcb.builders))
 	nodes := make([]*Tea, len(tcb.builders))
 	mutators := make([]Mutator, len(tcb.builders))
@@ -168,6 +152,10 @@ func (tcb *TeaCreateBulk) Save(ctx context.Context) ([]*Tea, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
+				if specs[i].ID.Value != nil {
+					id := specs[i].ID.Value.(int64)
+					nodes[i].ID = int(id)
+				}
 				mutation.done = true
 				return nodes[i], nil
 			})
