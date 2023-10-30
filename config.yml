@@ -1,0 +1,27 @@
+in:
+  type: postgresql
+  host: localhost
+  port: 5432
+  user: postgres
+  password: password
+  database: embulk-handson
+  table: teas
+  select: "*"
+
+out:
+  type: file
+  path_prefix: ./output_file/
+  sequence_format: "teas."
+  file_ext: csv
+  formatter:
+    type: csv
+    delimiter: ","
+    newline: CRLF
+    newline_in_field: LF
+    charset: UTF-8
+    quote_policy: MINIMAL
+    quote: '"'
+    escape: "\\"
+    null_string: "\\N"
+    default_timezone: "Asia/Tokyo"
+    header_line: true
