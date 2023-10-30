@@ -1,0 +1,17 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    embulk (0.8.39)
+      jruby-jars (= 9.1.13.0)
+    embulk-input-postgresql (0.10.1)
+    jruby-jars (9.1.13.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  embulk
+  embulk-input-postgresql (~> 0.10.1)
+
+BUNDLED WITH
+   1.17.2

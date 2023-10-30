@@ -1,0 +1,41 @@
+// TODO: Remove this block once rubygems.lasagna.io is back, or jruby-gradle-jar-plugin is upgraded to 1.5.0.
+// See also: https://github.com/jruby-gradle/jruby-gradle-plugin/issues/297
+// jruby-gradle-jar-plugin is not upgraded yet because its 1.5.0 depends on Java 8.
+repositories {
+    mavenLocal()
+    maven { url 'http://rubygems-proxy.torquebox.org/releases' }
+}
+
+apply plugin: 'com.github.jruby-gradle.base'
+
+import com.github.jrubygradle.JRubyExec
+jruby {
+    execVersion = '9.0.4.0'  // TODO jruby-9.1.2.0 causes "Unhandled Java exception: IRReturnJump..." exception
+    //execVersion = project.jrubyVersion
+}
+
+dependencies {
+    jrubyExec 'rubygems:yard:0.9.5'
+}
+
+task sphinxHtml(type: Exec) {
+    workingDir '.'
+    commandLine 'make'
+    args 'html'
+}
+
+task javadocHtml(type: Copy, dependsOn: [':embulk-core:javadoc']) {
+    doFirst { file('build/html/javadoc').mkdirs() }
+    from project(':embulk-core').javadoc.destinationDir
+    into 'build/html/javadoc'
+}
+
+task rdocHtml(type: JRubyExec) {
+    workingDir '..'
+    jrubyArgs '-ryard', '-eYARD::CLI::Yardoc.run(*ARGV)'
+    script './lib/embulk/version.rb'  // dummy
+    scriptArgs 'lib', '-o', 'embulk-docs/build/html/rdoc'
+}
+
+task site(type: Copy, dependsOn: ['sphinxHtml', 'rdocHtml', 'javadocHtml']) {
+}

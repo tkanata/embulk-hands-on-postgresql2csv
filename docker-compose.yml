@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:13  # または使用したいPostgreSQLのバージョンに応じて変更してください
+    image: postgres:13
     environment:
       POSTGRES_DB: embulk-handson
       POSTGRES_USER: postgres
