@@ -12,5 +12,18 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  embulk:
+    container_name: embulk
+    build: . 
+    volumes:
+      - ./output_file:/embulk/output_file
+    tty: true
+
+  golang:
+    image: golang:1.16
+    volumes:
+      - ./golang:/go
+    working_dir: /go
+
 volumes:
   pgdata:
