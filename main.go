@@ -19,6 +19,33 @@ func main() {
 	}
 	defer db.Close()
 
+	// テーブルから全てのレコードを削除
+	fmt.Println("Deleting all existing records from the 'teas' table...")
+	_, err = db.Exec("DELETE FROM teas")
+	if err != nil {
+		panic(err)  // エラーがあればここでパニックを起こす
+	}
+	fmt.Println("All existing records have been deleted.")
+
+
+  // 既存のIDを取得してセットに保存
+	existingIDs := make(map[string]bool)
+	rows, err := db.Query("SELECT id FROM teas")
+	if err != nil {
+		panic(err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			panic(err)
+		}
+		existingIDs[id] = true
+	}
+	if err := rows.Err(); err != nil {
+		panic(err)
+	}
+
 	// CSV ファイルを開く
 	f, err := os.Open("teas.csv")
 	if err != nil {
@@ -33,7 +60,7 @@ func main() {
 		panic(err)
 	}
 
-	// ヘッダー行をスキップするため、1から始める
+  // ヘッダー行をスキップするため、1から始める
 	for _, record := range records[1:] {
 		id := record[0]
 		name := record[1]
@@ -45,5 +72,7 @@ func main() {
 		}
 	}
 
+	
 	fmt.Println("Data imported successfully!")
 }
+
