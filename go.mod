@@ -3,7 +3,7 @@ module github.com/tkanata/embulk-hands-on-postgresql2csv
 go 1.20
 
 require (
-	entgo.io/ent v0.12.4
+	entgo.io/ent v0.12.5
 	github.com/lib/pq v1.10.9
 )
 

@@ -33,9 +33,25 @@ func (tu *TeaUpdate) SetName(s string) *TeaUpdate {
 	return tu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (tu *TeaUpdate) SetNillableName(s *string) *TeaUpdate {
+	if s != nil {
+		tu.SetName(*s)
+	}
+	return tu
+}
+
 // SetColor sets the "color" field.
 func (tu *TeaUpdate) SetColor(s string) *TeaUpdate {
 	tu.mutation.SetColor(s)
+	return tu
+}
+
+// SetNillableColor sets the "color" field if the given value is not nil.
+func (tu *TeaUpdate) SetNillableColor(s *string) *TeaUpdate {
+	if s != nil {
+		tu.SetColor(*s)
+	}
 	return tu
 }
 
@@ -112,9 +128,25 @@ func (tuo *TeaUpdateOne) SetName(s string) *TeaUpdateOne {
 	return tuo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (tuo *TeaUpdateOne) SetNillableName(s *string) *TeaUpdateOne {
+	if s != nil {
+		tuo.SetName(*s)
+	}
+	return tuo
+}
+
 // SetColor sets the "color" field.
 func (tuo *TeaUpdateOne) SetColor(s string) *TeaUpdateOne {
 	tuo.mutation.SetColor(s)
+	return tuo
+}
+
+// SetNillableColor sets the "color" field if the given value is not nil.
+func (tuo *TeaUpdateOne) SetNillableColor(s *string) *TeaUpdateOne {
+	if s != nil {
+		tuo.SetColor(*s)
+	}
 	return tuo
 }
 
